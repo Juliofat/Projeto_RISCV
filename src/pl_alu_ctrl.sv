@@ -47,7 +47,8 @@ module pl_alu_ctrl (
                     3'h2: Operation = 4'd11;  // SLT
                     3'h4: Operation = 4'd06;  //XOR (funt 3 e 100)  
                     3'h1: Operation = 4'd07;  //SLL
-
+                    3'h5: Operation = Funct7[5] ? 4'd09 : 4'd08;   //SRL e SRA --> mesmo funct 3 e os que diferencia é o quinto bit no funct 7
+                    3'h3: Operation = 4'd12; //SLTU
                     default: Operation = 4'd01;
                 endcase
             end
