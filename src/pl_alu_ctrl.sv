@@ -22,18 +22,32 @@ module pl_alu_ctrl (
     output logic [3:0] Operation
 );
 
+/* O modulo alu ctrl e reponsavel pelo controle da ALU. Ele recebe como entrada Aluop(saida do modulo de CONTROLE que impactara
+ qual intrucao a categoria de instrucao sera executada--de acesso a memoria ou de desvio), funct7 e funct 3. 
+ A saida da alu_ctrl (operation) ira para ALU. Esse operarion ira dizer para alu qual intrucao que eu irei executar, 
+ sendo determinada pelo modulo pl_ALU.
+*/
+
+
+
+
     always_comb begin
-        case (ALUOp)
-            2'b00: Operation = 4'd01;   // Load / Store -> ADD
+        case (ALUOp)                    // Eu que defino o ALuop
 
-            2'b01: Operation = 4'd02;   // Branch BEQ  -> SUB
+            2'b00: Operation = 4'd01;   // se for 2'b00: categoria de acesso a memoria(alu forcada a fazer soma para o calculo do endereco)
 
-            2'b10: begin                // R-type: decodificar Funct
+            2'b01: Operation = 4'd02;   // categoria de desvio condicional (alu forcada a fazer subtracao para comparar os valores dos registradores)
+
+            2'b10: begin                // categoria do tipo R-type (preciso olhar os funct agora)
+
                 case (Funct3)
-                    3'h0: Operation = Funct7[5] ? 4'd02 : 4'd01; // SUB ou ADD
+                    3'h0: Operation = Funct7[5] ? 4'd02 : 4'd01; // SUB ou ADD (verifica o quinto bit do funct7)
                     3'h6: Operation = 4'd04;  // OR
                     3'h7: Operation = 4'd05;  // AND
                     3'h2: Operation = 4'd11;  // SLT
+                    3'h4: Operation = 4'd06;  //XOR (funt 3 e 100)  
+                    3'h1: Operation = 4'd07;  //SLL
+
                     default: Operation = 4'd01;
                 endcase
             end
