@@ -41,6 +41,7 @@ module pl_control (
     localparam LOAD   = 7'b0000011;
     localparam STORE  = 7'b0100011;
     localparam BRANCH = 7'b1100011;
+    localparam I_TYPE = 7'b0010011;     //definindo o opcode das intrucoes do tipo I_type parte I (Addi, andi, ori, slli, slti, srli, srai);  
 
     always_comb begin
         ALUSrc   = 1'b0;
@@ -74,6 +75,26 @@ module pl_control (
                 Branch   = 1'b1;
                 ALUOp    = 2'b01;
             end
+            I_TYPE: begin                 // implementando os sinais de controle para as intrucoes do tipo I_type 
+                ALUSrc   = 1'b1;
+                MemtoReg = 1'b0;
+                RegWrite = 1'b1;
+                MemRead  = 1'b0;
+                MemWrite = 1'b0;
+                Branch   = 1'b0;
+                ALUOp    = 2'b11;
+
+            end   
+        /* Justificativa para os sinais para I_Type:
+           
+                ALUSrc   = 1'b0; -> Como o segundo operando vem do extensor de imediato, esse sinal agora é 1(diferente da R_type)
+                MemtoReg = 1'b0; -> Valor que sera escrito no reg_dest e o resultado da ALU(assim como em nas R_type)
+                RegWrite = 1'b1; -> Sinal de escrita no registrador de destino = 1
+                MemRead  = 1'b0; -> I_type nao acessa a memoria de dados
+                MemWrite = 1'b0; -> mesma justificativa da anterior
+                Branch   = 1'b0; -> Como I_type nao sao instrucoes de desvio, entao esse sinal e 0. (semrpe PC + 4)
+                ALUOp    = 2'b11. -> Esse sinal sendo '11', irei definir uma nova categoria para tratar as I_type em ALU control*/
+
             default: ; // sinais permanecem em zero (seguro)
         endcase
     end
