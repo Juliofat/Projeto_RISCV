@@ -49,6 +49,12 @@ module pl_mmio (
     logic       tx_busy;
     logic [7:0] rx_data;
     logic       rx_valid;
+    logic [31:0] tx_word;       // palavra de 32 bits em transmissao
+    logic [1:0]  tx_byte_idx;   // indice do byte atual (0=LSB, 3=MSB)
+    logic        tx_word_busy;  // alto enquanto houver bytes a enviar
+    logic [7:0]  tx_byte;       // byte corrente entregue a UART
+    logic rx_ready;
+    logic [31:0] cycle_count;
 
     pl_uart #(
         .CLK_HZ (50_000_000),
@@ -73,11 +79,7 @@ module pl_mmio (
     // tx_word_busy permanece alto enquanto houver bytes pendentes.
     // O CPU deve aguardar tx_busy == 0 (bit 9 de LW 0x410) antes de nova SW.
     // -------------------------------------------------------------------------
-    logic [31:0] tx_word;       // palavra de 32 bits em transmissao
-    logic [1:0]  tx_byte_idx;   // indice do byte atual (0=LSB, 3=MSB)
-    logic        tx_word_busy;  // alto enquanto houver bytes a enviar
-    logic [7:0]  tx_byte;       // byte corrente entregue a UART
-
+ 
     always_comb begin
         case (tx_byte_idx)
             2'd0: tx_byte = tx_word[7:0];
@@ -112,7 +114,7 @@ module pl_mmio (
     // -------------------------------------------------------------------------
     // Contador de ciclos de clock (32 bits, read-only em 0x414)
     // -------------------------------------------------------------------------
-    logic [31:0] cycle_count;
+    
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) cycle_count <= 32'b0;
@@ -122,7 +124,7 @@ module pl_mmio (
     // -------------------------------------------------------------------------
     // Flag rx_ready (sticky): set em rx_valid, clear em LW do endereco UART
     // -------------------------------------------------------------------------
-    logic rx_ready;
+    
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n)
