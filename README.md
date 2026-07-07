@@ -60,10 +60,10 @@ Processador RISC-V de 32 bits com pipeline de 5 estágios implementado em System
 
 | # | Instrução | Tipo | Opcode  | Status |
 |---|-----------|------|---------|:------:|
-| 1 | `LB`      | I    | 0000011 | ✅ |
-| 2 | `LH`      | I    | 0000011 | ✅ |
-| 3 | `LBU`     | I    | 0000011 | ✅ |
-| 4 | `LHU`     | I    | 0000011 | ✅ |
+| 1 | `LB`      | I    | 0000011 | ❌ |
+| 2 | `LH`      | I    | 0000011 | ❌ |
+| 3 | `LBU`     | I    | 0000011 | ❌ |
+| 4 | `LHU`     | I    | 0000011 | ❌ |
 
 #### Acesso à memória — stores (S-type)
 
